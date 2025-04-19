@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embroidery Cost Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-4">Embroidery Cost Calculator</h1>
+    <div class="space-y-4">
+      <!-- Stitch Input -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Stitch Count</label>
+        <input type="number" id="stitch" class="mt-1 block w-full p-2 border rounded-md" placeholder="Enter stitch count" step="1" min="0">
+      </div>
+      <!-- Rate Input -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Rate</label>
+        <input type="number" id="rate" class="mt-1 block w-full p-2 border rounded-md" placeholder="Enter rate" step="0.01" min="0">
+      </div>
+      <!-- Fixed Values with Lock -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Multiplier 1 (default: 2.8)</label>
+        <input type="number" id="multiplier1" class="mt-1 block w-full p-2 border rounded-md" value="2.8" step="0.01" disabled>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Multiplier 2 (default: 8.66)</label>
+        <input type="number" id="multiplier2" class="mt-1 block w-full p-2 border rounded-md" value="8.66" step="0.01" disabled>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Divisor (default: 1000)</label>
+        <input type="number" id="divisor" class="mt-1 block w-full p-2 border rounded-md" value="1000" step="1" disabled>
+      </div>
+      <!-- Lock/Unlock Toggle -->
+      <div class="flex items-center">
+        <input type="checkbox" id="lockToggle" class="mr-2">
+        <label for="lockToggle" class="text-sm font-medium text-gray-700">Unlock to edit fixed values</label>
+      </div>
+      <!-- Calculate Button -->
+      <button id="calculate" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Calculate</button>
+      <!-- Result Display -->
+      <div id="result" class="text-center text-lg font-semibold text-gray-800"></div>
+    </div>
+  </div>
+  <script>
+    const stitchInput = document.getElementById('stitch');
+    const rateInput = document.getElementById('rate');
+    const multiplier1Input = document.getElementById('multiplier1');
+    const multiplier2Input = document.getElementById('multiplier2');
+    const divisorInput = document.getElementById('divisor');
+    const lockToggle = document.getElementById('lockToggle');
+    const calculateButton = document.getElementById('calculate');
+    const resultDiv = document.getElementById('result');
+
+    // Toggle lock/unlock for fixed values
+    lockToggle.addEventListener('change', () => {
+      const isLocked = !lockToggle.checked;
+      multiplier1Input.disabled = isLocked;
+      multiplier2Input.disabled = isLocked;
+      divisorInput.disabled = isLocked;
+    });
+
+    // Calculate amount
+    calculateButton.addEventListener('click', () => {
+      const stitch = parseFloat(stitchInput.value) || 0;
+      const rate = parseFloat(rateInput.value) || 0;
+      const multiplier1 = parseFloat(multiplier1Input.value) || 2.8;
+      const multiplier2 = parseFloat(multiplier2Input.value) || 8.66;
+      const divisor = parseFloat(divisorInput.value) || 1000;
+
+      if (stitch <= 0 || rate <= 0) {
+        resultDiv.textContent = 'Please enter valid stitch count and rate.';
+        return;
+      }
+      if (divisor === 0) {
+        resultDiv.textContent = 'Divisor cannot be zero.';
+        return;
+      }
+
+      const amount = (stitch * multiplier1 * multiplier2 * rate) / divisor;
+      resultDiv.textContent = `Amount: $${amount.toFixed(2)}`;
+    });
+  </script>
+</body>
+</html>
